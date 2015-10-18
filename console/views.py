@@ -8,12 +8,29 @@ from instagram.client import InstagramAPI
 from instagram import subscriptions
 
 from .subscription_callback import reactor
+from . import forms
+from .models import Subscription
 
 # access_token = request.user.social_auth.get().extra_data['access_token']
 
 
 def home_page(request):
-    return render(request, 'home.html')
+    return render(request, 'home.html', {'form': forms.StreamForm()})
+
+
+def subscribe(request):
+    form = forms.StreamForm(request.POST)
+    if form.is_valid():
+        data = form.cleaned_data
+        subscription = Subscription(user=request.user)
+        subscription.subscribe(data['tag'])
+        return redirect('console:stream')
+    else:
+        return render(request, 'home.html', {'form': form})
+
+
+def stream(request):
+    return render(request, 'stream.html', {'user': request.user})
 
 
 def logout(request):
@@ -30,16 +47,6 @@ def unsubscribe():
     subscriptions = api.list_subscriptions()
     for subscription in subscriptions['data']:
         api.delete_subscriptions(id=subscription['id'])
-
-
-def subscribe(request):
-    api = InstagramAPI(
-        client_id=settings.SOCIAL_AUTH_INSTAGRAM_KEY,
-        client_secret=settings.SOCIAL_AUTH_INSTAGRAM_SECRET)
-    callback_url = reverse('console:notification')
-    print(callback_url)
-    api.create_subscription(object='tag', object_id='yoga', aspect='media', callback_url=settings.HOST + callback_url)
-    return redirect('/')
 
 
 def notification(request):

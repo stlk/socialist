@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>{% block title %}{% endblock %} | socialist</title>
+</head>
+<body>
+{% if user.is_authenticated %}
+  <div class="user-details">
+    You are logged in as <code>{{ user.username }}</code>!
+  </div>
+  <div>
+    <a class="btn btn-primary" href="{% url 'console:logout' %}" id="logout">
+      <i class="fa fa-sign-out"></i>
+      Logout
+    </a>
+  </div>
+  {% else %}
+  <a href="{% url 'social:begin' 'instagram' %}">
+    Login with Instagram
+  </a>
+{% endif %}
+{% block content %}{% endblock %}
+</body>
+</html>
