@@ -1,0 +1,42 @@
+{% if user.is_authenticated %}
+  <div class="user-details">
+    You are logged in as <code>{{ user.username }}</code>!
+  </div>
+  <div>
+    <a class="btn btn-primary" href="{% url 'console:logout' %}" id="logout">
+      <i class="fa fa-sign-out"></i>
+      Logout
+    </a>
+  </div>
+  <a href="{% url 'console:subscribe' %}">
+    subscribe
+  </a>
+  {% else %}
+  <a href="{% url 'social:begin' 'instagram' %}">
+    Login with IG
+  </a>
+{% endif %}
+
+<div id="photos">
+</div>
+
+<script src="https://js.pusher.com/3.0/pusher.min.js"></script>
+<script>
+  // Enable pusher logging - don't include this in production
+  Pusher.log = function(message) {
+    if (window.console && window.console.log) {
+      window.console.log(message);
+    }
+  };
+
+  var pusher = new Pusher('1339328b115c79a5da41', {
+    encrypted: true
+  });
+  var channel = pusher.subscribe('photos');
+  channel.bind('new', function(data) {
+    var photos = document.getElementById('photos');
+    var img = document.createElement('img');
+    img.setAttribute('src', data.photo);
+    photos.insertAdjacentElement('afterbegin', img);
+  });
+</script>
