@@ -1,0 +1,39 @@
+body {
+  background: #3c1a3c;
+  height: 100%;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -moz-font-feature-settings: "liga" on;
+  overflow: hidden;
+  font-size: 16px;
+  color: #fff;
+  font-family: "azo-sans-web", Sans-Serif;
+}
+
+a {
+  color: #fff;
+}
+
+a:visited {
+  color: #fff;
+}
+
+.button {
+  display: inline-block;
+  margin: 1rem;
+  padding: 1rem;
+  border: 3px solid #fff;
+  text-decoration: none;
+  background: none;
+  cursor: pointer;
+  color: #fff;
+}
+
+.login {
+  text-align: center;
+}
+
+.login h1 {
+  font-size: 3rem;
+}

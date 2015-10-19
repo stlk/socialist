@@ -3,12 +3,11 @@
 <head>
 	<meta charset="UTF-8">
 	<title>{% block title %}{% endblock %} | socialist</title>
+	{% load static %}
+	<link href="{% static 'app.css' %}" rel="stylesheet">
 </head>
 <body>
 {% if user.is_authenticated %}
-  <div class="user-details">
-    You are logged in as <code>{{ user.username }}</code>!
-  </div>
   <div>
     <a class="btn btn-primary" href="{% url 'accounts:logout' %}" id="logout">
       <i class="fa fa-sign-out"></i>

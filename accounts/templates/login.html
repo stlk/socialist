@@ -2,7 +2,10 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<a href="{% url 'social:begin' 'instagram' %}">
-  Login with Instagram
-</a>
+<section class="login">
+  <h1>socialist.</h1>
+  <a class="button" href="{% url 'social:begin' 'instagram' %}">
+    Login with Instagram
+  </a>
+</section>
 {% endblock %}
