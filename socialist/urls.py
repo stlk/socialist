@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.views.generic import RedirectView
 
 urlpatterns = [
-    url(r'^/?$', RedirectView.as_view(pattern_name='console:home')),
+    url(r'^/?$', RedirectView.as_view(pattern_name='console:subscribe')),
     url(r'^admin/', include(admin.site.urls)),
 	url(r'^console/', include('console.urls', namespace = 'console')),
     url(r'^auth/', include('social.apps.django_app.urls', namespace='social'))

@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout as auth_logout, login
 from django.core.urlresolvers import reverse
-
+from django.views.generic.base import View
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.conf import settings
+
 from instagram.client import InstagramAPI
 from instagram import subscriptions
 
@@ -13,20 +15,22 @@ from .models import Subscription
 
 # access_token = request.user.social_auth.get().extra_data['access_token']
 
+class SubscribeView(View):
 
-def home_page(request):
-    return render(request, 'home.html', {'form': forms.StreamForm()})
+    template_name = 'subscribe.html'
 
+    def get(self, request):
+        return render(request, self.template_name, {'form': forms.StreamForm()})
 
-def subscribe(request):
-    form = forms.StreamForm(request.POST)
-    if form.is_valid():
-        data = form.cleaned_data
-        subscription = Subscription(user=request.user)
-        subscription.subscribe(data['tag'])
-        return redirect('console:stream')
-    else:
-        return render(request, 'home.html', {'form': form})
+    def post(self, request):
+        form = forms.StreamForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            subscription = Subscription(user=request.user)
+            subscription.subscribe(data['tag'])
+            return redirect('console:stream')
+        else:
+            return render(request, self.template_name, {'form': form})
 
 
 def stream(request):
