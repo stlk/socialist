@@ -43,6 +43,17 @@ class StreamView(View):
         return render(request, self.template_name, {'user': request.user})
 
 
+    def post(self, request):
+        api = InstagramAPI(
+            client_id=settings.SOCIAL_AUTH_INSTAGRAM_KEY,
+            client_secret=settings.SOCIAL_AUTH_INSTAGRAM_SECRET)
+
+        subscription = Subscription.objects.get(user=request.user)
+        api.delete_subscriptions(id=subscription.instagram_id)
+        subscription.delete()
+        return redirect('console:subscribe')
+
+
 def notification(request):
     mode = request.GET.get("hub.mode")
     challenge = request.GET.get("hub.challenge")
