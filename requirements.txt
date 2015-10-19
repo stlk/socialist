@@ -1,4 +1,5 @@
 Django==1.8.5
+git+https://ze-phyr-us@github.com/ze-phyr-us/django-libretto.git
 python-social-auth==0.2.13
 python-instagram==1.3.2
 pusher==1.2.3

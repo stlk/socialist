@@ -10,15 +10,11 @@
     You are logged in as <code>{{ user.username }}</code>!
   </div>
   <div>
-    <a class="btn btn-primary" href="{% url 'console:logout' %}" id="logout">
+    <a class="btn btn-primary" href="{% url 'accounts:logout' %}" id="logout">
       <i class="fa fa-sign-out"></i>
       Logout
     </a>
   </div>
-  {% else %}
-  <a href="{% url 'social:begin' 'instagram' %}">
-    Login with Instagram
-  </a>
 {% endif %}
 {% block content %}{% endblock %}
 </body>

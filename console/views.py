@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import logout as auth_logout, login
 from django.core.urlresolvers import reverse
 from django.views.generic.base import View
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.conf import settings
 
+from django_libretto.decorators import view_decorator
 from instagram.client import InstagramAPI
 from instagram import subscriptions
 
@@ -15,6 +15,7 @@ from .models import Subscription
 
 # access_token = request.user.social_auth.get().extra_data['access_token']
 
+@view_decorator(login_required)
 class SubscribeView(View):
 
     template_name = 'subscribe.html'
@@ -35,22 +36,6 @@ class SubscribeView(View):
 
 def stream(request):
     return render(request, 'stream.html', {'user': request.user})
-
-
-def logout(request):
-    """Logs out user"""
-    auth_logout(request)
-    unsubscribe()
-    return redirect('/')
-
-
-def unsubscribe():
-    api = InstagramAPI(
-        client_id=settings.SOCIAL_AUTH_INSTAGRAM_KEY,
-        client_secret=settings.SOCIAL_AUTH_INSTAGRAM_SECRET)
-    subscriptions = api.list_subscriptions()
-    for subscription in subscriptions['data']:
-        api.delete_subscriptions(id=subscription['id'])
 
 
 def notification(request):

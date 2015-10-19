@@ -21,5 +21,6 @@ urlpatterns = [
     url(r'^/?$', RedirectView.as_view(pattern_name='console:subscribe')),
     url(r'^admin/', include(admin.site.urls)),
 	url(r'^console/', include('console.urls', namespace = 'console')),
+	url(r'^accounts/', include('accounts.urls', namespace = 'accounts')),
     url(r'^auth/', include('social.apps.django_app.urls', namespace='social'))
 ]
