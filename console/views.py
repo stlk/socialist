@@ -34,8 +34,13 @@ class SubscribeView(View):
             return render(request, self.template_name, {'form': form})
 
 
-def stream(request):
-    return render(request, 'stream.html', {'user': request.user})
+@view_decorator(login_required)
+class StreamView(View):
+
+    template_name = 'stream.html'
+
+    def get(self, request):
+        return render(request, self.template_name, {'user': request.user})
 
 
 def notification(request):
