@@ -1,14 +1,35 @@
 body {
   background: #3c1a3c;
-  height: 100%;
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -moz-font-feature-settings: "liga" on;
-  overflow: hidden;
   font-size: 16px;
   color: #fff;
   font-family: "azo-sans-web", Sans-Serif;
+}
+
+.container {
+    margin: auto;
+    max-width: 900px;
+}
+
+.header {
+  padding: 1rem;
+}
+
+.header .brand {
+  font-size: 2rem;
+  text-decoration: none;
+}
+
+.header .button-right {
+  float: right;
+}
+
+.header form {
+  display: inline-block;
+  vertical-align: super;
 }
 
 a {
@@ -21,13 +42,30 @@ a:visited {
 
 .button {
   display: inline-block;
-  margin: 1rem;
-  padding: 1rem;
+  margin: 1em;
+  padding: 0.5em;
+  font-size: 1.1rem;
   border: 3px solid #fff;
   text-decoration: none;
   background: none;
   cursor: pointer;
   color: #fff;
+  font-variant: small-caps;
+}
+
+input[type=text] {
+  background-color: #3c1a3c;
+  border: 3px solid #fff;
+  outline: 0;
+  padding: 0.5em;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.button-small {
+  margin: 0.2rem;
+  padding: 0.5em;
+  font-size: 0.8rem;
 }
 
 .login {

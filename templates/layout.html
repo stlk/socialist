@@ -1,20 +1,24 @@
 <!doctype html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>{% block title %}{% endblock %} | socialist</title>
-	{% load static %}
-	<link href="{% static 'app.css' %}" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>{% block title %}{% endblock %} | socialist</title>
+  {% load static %}
+  <link href="{% static 'app.css' %}" rel="stylesheet">
 </head>
 <body>
-{% if user.is_authenticated %}
-  <div>
-    <a class="btn btn-primary" href="{% url 'accounts:logout' %}" id="logout">
-      <i class="fa fa-sign-out"></i>
-      Logout
-    </a>
-  </div>
-{% endif %}
-{% block content %}{% endblock %}
+<div class="container">
+	{% if user.is_authenticated %}
+	  <div class="header">
+	    <a class="brand" href="/">socialist.</a>
+			{% block header %}{% endblock %}
+	    <a class="button button-small button-right" href="{% url 'accounts:logout' %}" id="logout">
+	      <i class="fa fa-sign-out"></i>
+	      Logout
+	    </a>
+	  </div>
+	{% endif %}
+	{% block content %}{% endblock %}
+</div>
 </body>
 </html>

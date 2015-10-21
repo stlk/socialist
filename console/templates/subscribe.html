@@ -3,10 +3,8 @@
 
 {% block content %}
 <form action="{% url 'console:subscribe' %}" method="post">
-	{{ form }}
+	{{ form.tag }}
 	{% csrf_token %}
-	<p>
-		<button type="submit" class="button">Continue</button>
-	</p>
+	<button type="submit" class="button">Continue</button>
 </form>
 {% endblock %}
