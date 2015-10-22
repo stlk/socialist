@@ -36,7 +36,10 @@ def process_photo_update(update):
     subscription.last_media_id = media.id
     subscription.save()
 
-    p.trigger('photos-{0}'.format(subscription.user.id), 'new', {'photo': photo})
+    if media.type == 'video':
+        return
+
+    p.trigger('photos-{0}'.format(subscription.user.id), 'new', {'photo': photo, 'link': media.link})
 
 
 reactor = subscriptions.SubscriptionsReactor()

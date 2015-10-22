@@ -26,10 +26,7 @@
   });
   var channel = pusher.subscribe('photos-{{user.id}}');
   channel.bind('new', function(data) {
-    var photos = document.getElementById('photos');
-    var img = document.createElement('img');
-    img.setAttribute('src', data.photo);
-    photos.insertAdjacentElement('afterbegin', img);
+		photos.insertAdjacentHTML('afterbegin', '<a href="' + data.link + '"><img src="' + data.photo + '"></a>')
   });
 </script>
 {% endblock %}
