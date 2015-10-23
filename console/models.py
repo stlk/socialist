@@ -23,7 +23,7 @@ class Subscription(models.Model):
             client_id=settings.SOCIAL_AUTH_INSTAGRAM_KEY,
             client_secret=settings.SOCIAL_AUTH_INSTAGRAM_SECRET)
         callback_url = reverse('console:notification')
-        subscription = api.create_subscription(object='tag', object_id=tag, aspect='media', callback_url=settings.HOST + callback_url)['data']
+        subscription = api.create_subscription(object='tag', object_id=tag, aspect='media', callback_url=settings.HOSTNAME + callback_url)['data']
         self.instagram_id = subscription['id']
         self.object_type = subscription['object']
         self.object_id = subscription['object_id']

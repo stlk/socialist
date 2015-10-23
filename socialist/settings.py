@@ -25,8 +25,8 @@ SECRET_KEY = '8$bo@*5m)tc(06^bs0pteaxr%d7bjxm4lpwgj206&slxoxvhkb'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+# Allow all host headers
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -52,17 +52,15 @@ AUTHENTICATION_BACKENDS = (
   'django.contrib.auth.backends.ModelBackend',
 )
 
-HOST = ''
+HOSTNAME = os.environ.get('HOSTNAME')
 
-SOCIAL_AUTH_INSTAGRAM_KEY = ''
-SOCIAL_AUTH_INSTAGRAM_SECRET = ''
-SOCIAL_AUTH_LOGIN_REDIRECT_URL= '/'
+SOCIAL_AUTH_INSTAGRAM_KEY = os.environ["SOCIAL_AUTH_INSTAGRAM_KEY"]
+SOCIAL_AUTH_INSTAGRAM_SECRET = os.environ["SOCIAL_AUTH_INSTAGRAM_SECRET"]
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = os.environ["SOCIAL_AUTH_LOGIN_REDIRECT_URL"]
 
-PUSHER_APP_ID = ''
-PUSHER_KEY = ''
-PUSHER_SECRET = ''
-
-LAST_PHOTO = None
+PUSHER_APP_ID = os.environ["PUSHER_APP_ID"]
+PUSHER_KEY = os.environ["PUSHER_KEY"]
+PUSHER_SECRET = os.environ["PUSHER_SECRET"]
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -100,12 +98,14 @@ WSGI_APPLICATION = 'socialist.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
+# Parse database configuration from $DATABASE_URL
+import dj_database_url
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': dj_database_url.config()
 }
+
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 LOGGING = {
     'version': 1,
@@ -140,6 +140,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
+STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
