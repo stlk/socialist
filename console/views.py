@@ -13,7 +13,7 @@ from .subscription_callback import reactor
 from . import forms
 from .models import Subscription
 
-# access_token = request.user.social_auth.get().extra_data['access_token']
+
 
 @view_decorator(login_required)
 class SubscribeView(View):

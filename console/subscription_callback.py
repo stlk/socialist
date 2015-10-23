@@ -22,7 +22,7 @@ def process_photo_update(update):
     subscription = Subscription.objects.get(instagram_id=update['subscription_id'])
 
     api = InstagramAPI(
-        client_id=settings.SOCIAL_AUTH_INSTAGRAM_KEY,
+        access_token=subscription.user.social_auth.get().extra_data['access_token'],
         client_secret=settings.SOCIAL_AUTH_INSTAGRAM_SECRET)
     tag_recent_media, next = api.tag_recent_media(tag_name=update['object_id'], count=1, max_tag_id=subscription.last_media_id)
 
