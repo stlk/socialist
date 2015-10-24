@@ -7,3 +7,5 @@ dj-database-url==0.3.0
 dj-static==0.0.6
 gunicorn==19.3.0
 psycopg2==2.6.1
+redis==2.10.3
+celery==3.1.18
