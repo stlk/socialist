@@ -13,7 +13,7 @@ class Subscription(models.Model):
     last_media_id = models.CharField(max_length = 50)
     object_type = models.CharField(max_length = 50)
     object_id = models.CharField(max_length = 100)
-    user = models.ForeignKey(User)
+    user = models.OneToOneField(User, primary_key = True)
 
     def subscribe(self, tag):
         """

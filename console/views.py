@@ -4,6 +4,7 @@ from django.views.generic.base import View
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 
 from django_libretto.decorators import view_decorator
 from instagram.client import InstagramAPI
@@ -21,7 +22,11 @@ class SubscribeView(View):
     template_name = 'subscribe.html'
 
     def get(self, request):
-        return render(request, self.template_name, {'form': forms.StreamForm()})
+        try:
+            request.user.subscription
+            return redirect('console:stream')
+        except ObjectDoesNotExist:
+            return render(request, self.template_name, {'form': forms.StreamForm()})
 
     def post(self, request):
         form = forms.StreamForm(request.POST)
