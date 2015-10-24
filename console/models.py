@@ -19,12 +19,16 @@ class Subscription(models.Model):
         """
         {'data': {'id': '20423789', 'aspect': 'media', 'type': 'subscription', 'object': 'tag', 'callback_url': '...', 'object_id': 'joseftaguje'}, 'meta': {'code': 200}}
         """
-        api = InstagramAPI(
-            client_id=settings.SOCIAL_AUTH_INSTAGRAM_KEY,
-            client_secret=settings.SOCIAL_AUTH_INSTAGRAM_SECRET)
-        callback_url = reverse('console:notification')
-        subscription = api.create_subscription(object='tag', object_id=tag, aspect='media', callback_url=settings.HOSTNAME + callback_url)['data']
+        subscription = Subscription.subscribe_for_photos(tag)
         self.instagram_id = subscription['id']
         self.object_type = subscription['object']
         self.object_id = subscription['object_id']
         self.save()
+
+    @classmethod
+    def subscribe_for_photos(cls, tag):
+        api = InstagramAPI(
+            client_id=settings.SOCIAL_AUTH_INSTAGRAM_KEY,
+            client_secret=settings.SOCIAL_AUTH_INSTAGRAM_SECRET)
+        callback_url = reverse('console:notification')
+        return api.create_subscription(object='tag', object_id=tag, aspect='media', callback_url=settings.HOSTNAME + callback_url)['data']

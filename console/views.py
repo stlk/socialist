@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from django.core.urlresolvers import reverse
 from django.views.generic.base import View
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -46,7 +45,6 @@ class StreamView(View):
 
     def get(self, request):
         return render(request, self.template_name, {'user': request.user})
-
 
     def post(self, request):
         api = InstagramAPI(
