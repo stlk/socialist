@@ -7,7 +7,7 @@ from .models import Subscription
 
 User = get_user_model()
 
-class UserModelTest(TestCase):
+class SubscriptionModelTest(TestCase):
 
     def test_user_returns_active_subscription(self):
         user = User.objects.create()
@@ -36,7 +36,7 @@ class SubscribeViewTest(TestCase):
         self.client.logout()
 
     @patch('console.models.Subscription')
-    def test_returns_OK_when_user_found(
+    def test_redirects_to_stream_when_subscription_was_successful(
         self, mock_subscription
     ):
         mock_subscription.subscribe_for_photos.return_value = {'id': 1, 'object': 'tag', 'object_id': 'xxx'}
