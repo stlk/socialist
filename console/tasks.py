@@ -16,14 +16,6 @@ import pusher
 from .models import Subscription
 
 
-p = pusher.Pusher(
-  app_id=settings.PUSHER_APP_ID,
-  key=settings.PUSHER_KEY,
-  secret=settings.PUSHER_SECRET,
-  ssl=True,
-  port=443
-)
-
 @app.task
 def process_photo_update(update):
     """
@@ -51,4 +43,11 @@ def process_photo_update(update):
     if media.type == 'video':
         return
 
+    p = pusher.Pusher(
+      app_id=settings.PUSHER_APP_ID,
+      key=settings.PUSHER_KEY,
+      secret=settings.PUSHER_SECRET,
+      ssl=True,
+      port=443
+    )
     p.trigger('photos-{0}'.format(subscription.user.id), 'new', {'photo': photo, 'link': media.link})
