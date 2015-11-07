@@ -1,34 +1,25 @@
 from django.db import models
-from django.conf import settings
-from django.core.urlresolvers import reverse
-
-from instagram.client import InstagramAPI
-
+from django.utils import timezone
 from django.contrib.auth.models import User
 
 
-
 class Subscription(models.Model):
-    instagram_id = models.IntegerField()
-    last_media_id = models.CharField(max_length = 50)
-    object_type = models.CharField(max_length = 50)
-    object_id = models.CharField(max_length = 100)
-    user = models.OneToOneField(User, primary_key = True)
-
-    def subscribe(self, tag):
-        """
-        {'data': {'id': '20423789', 'aspect': 'media', 'type': 'subscription', 'object': 'tag', 'callback_url': '...', 'object_id': 'joseftaguje'}, 'meta': {'code': 200}}
-        """
-        subscription = Subscription.subscribe_for_photos(tag)
-        self.instagram_id = subscription['id']
-        self.object_type = subscription['object']
-        self.object_id = subscription['object_id']
-        self.save()
+    user = models.ForeignKey(User)
+    created = models.DateTimeField(auto_now_add = True)
+    cancelled = models.DateTimeField(null = True)
 
     @classmethod
-    def subscribe_for_photos(cls, tag):
-        api = InstagramAPI(
-            client_id=settings.SOCIAL_AUTH_INSTAGRAM_KEY,
-            client_secret=settings.SOCIAL_AUTH_INSTAGRAM_SECRET)
-        callback_url = reverse('console:notification')
-        return api.create_subscription(object='tag', object_id=tag, aspect='media', callback_url=settings.HOSTNAME + callback_url)['data']
+    def is_user_subscribed(cls, user: User) -> bool:
+        return user.subscription_set.filter(cancelled=None).exists()
+
+    @classmethod
+    def subscribe(cls, user: User, email: str):
+        user.email = email
+        user.save()
+        user.subscription_set.create()
+
+    @classmethod
+    def unsubscribe(cls, user: User):
+        subscription = user.subscription_set.get(cancelled=None)
+        subscription.cancelled = timezone.now()
+        subscription.save()

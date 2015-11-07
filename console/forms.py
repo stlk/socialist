@@ -1,4 +1,4 @@
 import django.forms
 
-class StreamForm(django.forms.Form):
-	tag = django.forms.CharField()
+class SubscribeForm(django.forms.Form):
+	email = django.forms.CharField()

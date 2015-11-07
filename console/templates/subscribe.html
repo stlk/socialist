@@ -1,9 +1,12 @@
 {% extends 'layout.html' %}
-{% block title %}What are you interested in?{% endblock %}
+{% block title %}Want to receive my weekly newsletter?{% endblock %}
 
 {% block content %}
+<p>
+	
+</p>
 <form action="{% url 'console:subscribe' %}" method="post">
-	{{ form.tag }}
+	{{ form.email }}
 	{% csrf_token %}
 	<button type="submit" class="button">Continue</button>
 </form>

@@ -11,23 +11,22 @@ class SubscriptionModelTest(TestCase):
 
     def test_user_returns_active_subscription(self):
         user = User.objects.create()
-        subscription = Subscription.objects.create(user=user, instagram_id=1)
-        self.assertEqual(user.subscription, subscription)
+        subscription = user.subscription_set.create()
+        self.assertEqual(user.subscription_set.get(), subscription)
 
-
-class NotificationViewTest(TestCase):
-
-    def test_notification_handshake(self):
-        response = self.client.get(reverse('console:notification') + '?hub.challenge=xxx')
-        self.assertEqual(response.content.decode(), 'xxx')
-
+    def test_unsubscribe_cancels_active_subscription(self):
+        user = User.objects.create()
+        subscription = user.subscription_set.create()
+        Subscription.unsubscribe(user)
+        subscription = user.subscription_set.get()
+        self.assertIsNotNone(subscription.cancelled)
 
 class SubscribeViewTest(TestCase):
 
     def setUp(self):
         User.objects.create_superuser(
             'user1',
-            'user1@example.com',
+            '',
             'pswd',
         )
         self.client.login(username="user1", password="pswd")
@@ -35,10 +34,18 @@ class SubscribeViewTest(TestCase):
     def tearDown(self):
         self.client.logout()
 
-    @patch('console.models.Subscription')
-    def test_redirects_to_stream_when_subscription_was_successful(
-        self, mock_subscription
-    ):
-        mock_subscription.subscribe_for_photos.return_value = {'id': 1, 'object': 'tag', 'object_id': 'xxx'}
-        response = self.client.post(reverse('console:subscribe'), {'tag': 'xxx'})
-        self.assertRedirects(response, reverse('console:stream'))
+    def test_display_subscription_form_when_user_is_not_subscribed(self):
+        response = self.client.get(reverse('console:subscribe'))
+        self.assertTemplateUsed(response, 'subscribe.html')
+
+    def test_redirect_to_subscribed_page_when_user_is_alredy_subscribed(self):
+        user = User.objects.get(username='user1')
+        subscription = Subscription.objects.create(user=user)
+        response = self.client.get(reverse('console:subscribe'))
+
+        self.assertRedirects(response, reverse('console:subscribed'))
+
+    def test_save_users_email(self):
+        response = self.client.post(reverse('console:subscribe'), {'email': 'email@example.com'})
+        user = User.objects.get(username='user1')
+        self.assertEqual(user.email, 'email@example.com')
