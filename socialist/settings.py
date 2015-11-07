@@ -62,6 +62,8 @@ SOCIAL_AUTH_LOGIN_REDIRECT_URL = os.environ.get("SOCIAL_AUTH_LOGIN_REDIRECT_URL"
 PUSHER_APP_ID = os.environ.get("PUSHER_APP_ID")
 PUSHER_KEY = os.environ.get("PUSHER_KEY")
 PUSHER_SECRET = os.environ.get("PUSHER_SECRET")
+SENDWITHUS_KEY = os.environ.get("SENDWITHUS_KEY")
+SENDWITHUS_TEMPLATE = 'tem_Mn9ynPkDBrVRLAeBrB24cG'
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
