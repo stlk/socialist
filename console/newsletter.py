@@ -9,6 +9,6 @@ class Newsletter():
         send_recommendations.delay(user)
 
     def send_to_all_subscribers(self):
-        for user in User.objects.filter(subscription__cancelled=None):
+        for user in User.objects.filter(subscription__id__isnull=False, subscription__cancelled=None):
             logging.info('Sending newsletter to %s', user.username)
             self.send(user)
