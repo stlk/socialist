@@ -73,7 +73,7 @@ class Instagram():
             print("loading... {0}".format(tag))
             media_for_user.extend(self.get_media_for_tag(tag))
 
-        media_for_user_processed = map(lambda m: {'id': m.id, 'author': m.user.username, 'caption': m.caption.text, 'likes': m.like_count, 'link': m.link, 'url': m.get_standard_resolution_url(), 'tags': list(map(lambda t: t.name, m.tags))}, media_for_user)
+        media_for_user_processed = map(lambda m: {'id': m.id, 'author': m.user.username, 'caption': (m.caption.text if m.caption else ''), 'likes': m.like_count, 'link': m.link, 'url': m.get_standard_resolution_url(), 'tags': list(map(lambda t: t.name, m.tags))}, media_for_user)
         media_for_user_processed = unique(media_for_user_processed, lambda m: m['id'])
 
         media_for_user_processed = sorted(media_for_user_processed, key = lambda m: m['likes'] * weight_by_tags(top_10_tags_with_count, m['tags']), reverse = True)
