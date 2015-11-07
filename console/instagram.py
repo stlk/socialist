@@ -53,7 +53,7 @@ class Instagram():
         media = []
         tag_recent_media, next_ = self.api.tag_recent_media(tag_name=tag)
         media.extend(tag_recent_media)
-        while next_ and len(media) < 10:
+        while next_ and len(media) < 500:
             tag_recent_media, next_ = self.api.tag_recent_media(tag_name=tag, with_next_url=next_)
             media.extend(tag_recent_media)
             print("Remaining API Calls: %s/%s" % (self.api.x_ratelimit_remaining, self.api.x_ratelimit))
