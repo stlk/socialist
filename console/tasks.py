@@ -1,21 +1,11 @@
-import os
-import celery
-from django.conf import settings
-
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'socialist.settings')
-
-app = celery.Celery('socialist')
-app.config_from_object('django.conf:settings')
-
+from django.contrib.auth.models import User
+from django_rq import job
 
 from .instagram import Instagram
 from .mailer import Mailer
 
-from django.contrib.auth.models import User
 
-
-@app.task
+@job
 def send_recommendations(user: User):
     instagram = Instagram(user)
     photos = instagram.recommend()

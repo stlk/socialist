@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'social.apps.django_app.default',
     'accounts',
     'console',
+    'django_rq',
 )
 
 TEMPLATES = (
@@ -52,7 +53,13 @@ AUTHENTICATION_BACKENDS = (
   'django.contrib.auth.backends.ModelBackend',
 )
 
-BROKER_URL = os.environ.get('REDIS_URL')
+RQ_QUEUES = {
+    'default': {
+        'URL': os.environ.get('REDIS_URL'),
+        'DB': 0,
+        'DEFAULT_TIMEOUT': 3600,
+    },
+}
 
 SOCIAL_AUTH_INSTAGRAM_KEY = os.environ.get("SOCIAL_AUTH_INSTAGRAM_KEY")
 SOCIAL_AUTH_INSTAGRAM_SECRET = os.environ.get("SOCIAL_AUTH_INSTAGRAM_SECRET")

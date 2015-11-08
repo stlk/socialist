@@ -2,11 +2,12 @@ import logging
 from django.contrib.auth.models import User
 
 from .tasks import send_recommendations
+import django_rq
 
 class Newsletter():
 
     def send(self, user: User):
-        send_recommendations.delay(user)
+        django_rq.enqueue(send_recommendations, user)
 
     def send_to_all_subscribers(self):
         users = User.objects.filter(subscription__id__isnull=False, subscription__cancelled=None)

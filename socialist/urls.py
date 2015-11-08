@@ -22,5 +22,6 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
 	url(r'^console/', include('console.urls', namespace = 'console')),
 	url(r'^accounts/', include('accounts.urls', namespace = 'accounts')),
-    url(r'^auth/', include('social.apps.django_app.urls', namespace='social'))
+    url(r'^auth/', include('social.apps.django_app.urls', namespace='social')),
+    url(r'^django-rq/', include('django_rq.urls')),
 ]
