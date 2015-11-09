@@ -1,3 +1,4 @@
+import logging
 from django.conf import settings
 import sendwithus
 
@@ -12,4 +13,7 @@ class Mailer():
             recipient={'address': email},
             sender={'name': 'socialist.', 'address':'socialist@post.rousek.name'},
             email_data={'photos': photos})
-        print(r.status_code)
+        if r.status_code == 200:
+            logging.info('Sent email: {0}'.format(email))
+        else:
+            logging.warning('Mail didn\'t went through. {0}'.format(r.content))
