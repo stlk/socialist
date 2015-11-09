@@ -1,2 +1,2 @@
 web: gunicorn socialist.wsgi --log-file -
-worker: python manage.py rqworker default
+worker: python -u manage.py rqworker default
