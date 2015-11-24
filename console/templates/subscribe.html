@@ -1,9 +1,12 @@
 {% extends 'layout.html' %}
-{% block title %}Want to receive my weekly newsletter?{% endblock %}
+{% block title %}subscribe{% endblock %}
 
 {% block content %}
 <p>
-	
+	Every wednesday morning you will receive few instagram photos picked specifically for you.
+</p>
+<p>
+	Instagram doesn't let us access your email, please enter it to subscribe.
 </p>
 <form action="{% url 'console:subscribe' %}" method="post">
 	{{ form.email }}
