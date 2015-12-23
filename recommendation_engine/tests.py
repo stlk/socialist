@@ -1,7 +1,7 @@
 from django.test import TestCase
 from unittest.mock import patch, Mock, PropertyMock
 from instagram.client import InstagramAPI
-from .instagram import Instagram
+from .related_photos import RelatedPhotos
 
 
 class MockInstagramAPI(InstagramAPI):
@@ -29,12 +29,12 @@ class MockInstagramAPI(InstagramAPI):
 
 @patch('django.contrib.auth.models.User')
 @patch('recommendation_engine.instagram.InstagramAPI', new=MockInstagramAPI)
-class InstagramTest(TestCase):
+class RelatedPhotosTest(TestCase):
 
     def test_recommend_returns_correct_data(self, User):
         user = User()
 
-        instagram = Instagram(user)
-        recommendations = instagram.recommend()
+        related_photos = RelatedPhotos(user)
+        recommendations = related_photos.recommend()
 
         self.assertEqual(recommendations[0]['tags'][0], 'tag')
