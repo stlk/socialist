@@ -75,6 +75,7 @@ class RelatedPhotos(Instagram):
             lambda m:
                 {
                     'id': m.id,
+                    'user_id': m.user.id,
                     'author': m.user.username,
                     'caption': (m.caption.text if m.caption else ''),
                     'likes': m.like_count,
