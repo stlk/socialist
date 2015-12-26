@@ -3,6 +3,7 @@ from unittest.mock import patch, Mock, PropertyMock
 from instagram.client import InstagramAPI
 from .related_photos import RelatedPhotos
 from .user_distance_data import UserDistanceData
+from .user_distance import UserDistance
 from .models import UserAggregation
 
 
@@ -61,3 +62,29 @@ class UserDistanceDataTest(TestCase):
 
         aggregation = UserAggregation.objects.get(user_id=1)
         self.assertEqual(aggregation.raw_text, 'caption')
+
+
+@patch('django.contrib.auth.models.User')
+class UserDistanceTest(TestCase):
+
+    def test_calculates_correct_distance(self, User):
+        user = User()
+        user.username = '1'
+
+        media = [{'username': '1'}, {'username': '2'}]
+
+        UserAggregation.objects.create(user_id=1,
+                                       username='1',
+                                       raw_text='Some sentence.',
+                                       media_count=1)
+
+        UserAggregation.objects.create(user_id=2,
+                                       username='2',
+                                       raw_text='Zlutoucky kun peje dabelske ody.',
+                                       media_count=1)
+
+        user_distance = UserDistance(user)
+        user_distance.assign_user_distances(media)
+
+        self.assertEqual(media[0]['distance'], 0.0)
+        self.assertEqual(media[1]['distance'], 2.4494897427831779)
