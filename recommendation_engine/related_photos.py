@@ -51,7 +51,7 @@ class RelatedPhotos(Instagram):
         self.log_ratelimit()
         tag_recent_media, next_ = self.api.tag_recent_media(tag_name=tag)
         media.extend(tag_recent_media)
-        while next_ and len(media) < 500:
+        while next_ and len(media) < 200:
             tag_recent_media, next_ = self.api.tag_recent_media(tag_name=tag, with_next_url=next_)
             media.extend(tag_recent_media)
             self.log_ratelimit()
@@ -76,7 +76,7 @@ class RelatedPhotos(Instagram):
                 {
                     'id': m.id,
                     'user_id': m.user.id,
-                    'author': m.user.username,
+                    'username': m.user.username,
                     'caption': (m.caption.text if m.caption else ''),
                     'likes': m.like_count,
                     'link': m.link,
