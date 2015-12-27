@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 
 from .models import UserAggregation
 
+import numpy as np  # a conventional alias
 import sklearn.feature_extraction.text as text
 from sklearn.metrics.pairwise import euclidean_distances
 
@@ -28,5 +29,9 @@ class UserDistance():
 
         self.generate_dtm(media_captions)
 
+        distance_threshold = np.max(self.dist) - np.mean(self.dist) * 2
+
         for medium in media:
-            medium['distance'] = self.find_distance(medium)
+            distance = self.find_distance(medium)
+            medium['distance'] = distance
+            medium['recommended'] = distance < distance_threshold

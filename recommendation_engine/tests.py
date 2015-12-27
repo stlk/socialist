@@ -4,6 +4,7 @@ from instagram.client import InstagramAPI
 from .related_photos import RelatedPhotos
 from .user_distance_data import UserDistanceData
 from .user_distance import UserDistance
+from . import recommender
 from .models import UserAggregation
 
 
@@ -14,7 +15,7 @@ class MockInstagramAPI(InstagramAPI):
         type(tag).name = PropertyMock(return_value='tag')
         user = Mock()
         type(user).id = PropertyMock(return_value=1)
-        type(user).username = PropertyMock(return_value='username')
+        type(user).username = PropertyMock(return_value='1')
         caption = Mock()
         type(caption).text = PropertyMock(return_value='caption')
         medium = Mock(id=1,
@@ -88,3 +89,31 @@ class UserDistanceTest(TestCase):
 
         self.assertEqual(media[0]['distance'], 0.0)
         self.assertEqual(media[1]['distance'], 2.4494897427831779)
+
+
+@patch('django.contrib.auth.models.User')
+@patch('recommendation_engine.instagram.InstagramAPI', new=MockInstagramAPI)
+class RecommenderTest(TestCase):
+
+    def test_process_runs(self, User):
+        user = User()
+        user.username = '1'
+
+        UserAggregation.objects.create(user_id=1,
+                                       username='1',
+                                       raw_text='Some sentence.',
+                                       media_count=1)
+
+        UserAggregation.objects.create(user_id=2,
+                                       username='2',
+                                       raw_text='Zlutoucky kun peje dabelske ody.',
+                                       media_count=1)
+
+        UserAggregation.objects.create(user_id=3,
+                                       username='3',
+                                       raw_text='Zlutoucky kun peje dabelske ody.',
+                                       media_count=1)
+
+        recommender.PHOTO_COUNT = 1
+        r = recommender.Recommender(user)
+        r.process()
