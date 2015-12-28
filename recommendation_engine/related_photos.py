@@ -2,6 +2,9 @@ import logging
 from functools import reduce
 from collections import Counter
 
+from django.contrib.auth.models import User
+
+from .models import UserAggregation
 from .instagram import Instagram
 
 
@@ -35,6 +38,10 @@ def weight_by_tags(weights, tags):
 
 class RelatedPhotos(Instagram):
 
+    def __init__(self, user: User):
+        self.user = user
+        super(RelatedPhotos, self).__init__(user)
+
     def get_liked_media(self):
         media = []
         self.log_ratelimit()
@@ -57,7 +64,7 @@ class RelatedPhotos(Instagram):
             self.log_ratelimit()
         return media
 
-    def recommend(self):
+    def get_top_10_tags(self):
         media = self.get_liked_media()
 
         tags_collections = map(lambda photo: photo.tags, media)
@@ -65,11 +72,25 @@ class RelatedPhotos(Instagram):
 
         top_10_tags_with_count = Counter(tags_collections).most_common(10)
         top_10_tags = map(lambda tag: tag[0], top_10_tags_with_count)
+        return top_10_tags, top_10_tags_with_count
+
+    def find_media_for_tag(self, tag):
+        aggregations = UserAggregation.objects.filter(tags__contains=[tag])
+        if aggregations.exists():
+            user_id = aggregations[0].user_id
+            logging.info("Loading tag {0} for user {1}...".format(tag, user_id))
+            recent_media, next_ = self.api.user_recent_media(user_id=user_id)
+            return recent_media
+        else:
+            logging.info("Loading tag... {0}".format(tag))
+            return self.get_media_for_tag(tag)
+
+    def recommend(self):
+        top_10_tags, top_10_tags_with_count = self.get_top_10_tags()
 
         media_for_user = []
         for tag in top_10_tags:
-            logging.info("Loading... {0}".format(tag))
-            media_for_user.extend(self.get_media_for_tag(tag))
+            media_for_user.extend(self.find_media_for_tag(tag))
 
         media_for_user_processed = map(
             lambda m:

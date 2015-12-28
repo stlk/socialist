@@ -38,6 +38,13 @@ class MockInstagramAPI(InstagramAPI):
         return [self.medium], None
 
 
+def init_mock_user(User):
+    user = User()
+    user.username = '1'
+    type(user.social_auth.get()).uid = PropertyMock(return_value=1)
+    return user
+
+
 @patch('django.contrib.auth.models.User')
 @patch('recommendation_engine.instagram.InstagramAPI', new=MockInstagramAPI)
 class RelatedPhotosTest(TestCase):
@@ -55,8 +62,8 @@ class RelatedPhotosTest(TestCase):
 @patch('recommendation_engine.instagram.InstagramAPI', new=MockInstagramAPI)
 class UserDistanceDataTest(TestCase):
 
-    def test_recommend_returns_correct_data(self, User):
-        user = User()
+    def test_saves_aggregation_with_caption(self, User):
+        user = init_mock_user(User)
 
         user_distance_data = UserDistanceData(user)
         user_distance_data.get_user_aggregations([1])
@@ -69,19 +76,20 @@ class UserDistanceDataTest(TestCase):
 class UserDistanceTest(TestCase):
 
     def test_calculates_correct_distance(self, User):
-        user = User()
-        user.username = '1'
+        user = init_mock_user(User)
 
         media = [{'username': '1'}, {'username': '2'}]
 
         UserAggregation.objects.create(user_id=1,
                                        username='1',
                                        raw_text='Some sentence.',
+                                       tags=['tag'],
                                        media_count=1)
 
         UserAggregation.objects.create(user_id=2,
                                        username='2',
                                        raw_text='Zlutoucky kun peje dabelske ody.',
+                                       tags=['tag'],
                                        media_count=1)
 
         user_distance = UserDistance(user)
@@ -96,22 +104,24 @@ class UserDistanceTest(TestCase):
 class RecommenderTest(TestCase):
 
     def test_process_runs(self, User):
-        user = User()
-        user.username = '1'
+        user = init_mock_user(User)
 
         UserAggregation.objects.create(user_id=1,
                                        username='1',
                                        raw_text='Some sentence.',
+                                       tags=['tag'],
                                        media_count=1)
 
         UserAggregation.objects.create(user_id=2,
                                        username='2',
                                        raw_text='Zlutoucky kun peje dabelske ody.',
+                                       tags=['tag'],
                                        media_count=1)
 
         UserAggregation.objects.create(user_id=3,
                                        username='3',
                                        raw_text='Zlutoucky kun peje dabelske ody.',
+                                       tags=['tag'],
                                        media_count=1)
 
         recommender.PHOTO_COUNT = 1

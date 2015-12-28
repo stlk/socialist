@@ -1,10 +1,17 @@
 import logging
+import itertools
+
+from django.contrib.auth.models import User
 
 from .models import UserAggregation
 from .instagram import Instagram
 
 
 class UserDistanceData(Instagram):
+
+    def __init__(self, user: User):
+        self.user = user
+        super(UserDistanceData, self).__init__(user)
 
     def get_recent_media(self, user_id):
         media = []
@@ -20,8 +27,10 @@ class UserDistanceData(Instagram):
     def get_user_data(self, user_id):
         recent_media = self.get_recent_media(user_id)
         text = ' '.join([(m.caption.text if m.caption else '') for m in recent_media])
+        tags = list(itertools.chain([[t.name for t in m.tags] for m in recent_media if m.tags]))
         return UserAggregation(
             raw_text=text,
+            tags=tags,
             user_id=user_id,
             media_count=len(recent_media),
             username=recent_media[0].user.username)
