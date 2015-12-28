@@ -36,6 +36,10 @@ class UserDistanceData(Instagram):
             username=recent_media[0].user.username)
 
     def get_user_aggregations(self, users):
+        # Load data for current user, so we have something we can compare to.
+        users = list(users)
+        users.append(self.user.social_auth.get().uid)
+
         for user_id in users:
             if UserAggregation.objects.filter(user_id=user_id).exists():
                 logging.info('Skipping... %s', user_id)
