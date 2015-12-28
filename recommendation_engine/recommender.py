@@ -4,7 +4,8 @@ from .related_photos import RelatedPhotos
 from .user_distance_data import UserDistanceData
 from .user_distance import UserDistance
 
-PHOTO_COUNT = 5
+RELATED_MEDIA_COUNT = 20
+TOTAL_MEDIA_COUNT = 5
 
 
 class Recommender():
@@ -27,10 +28,10 @@ class Recommender():
 
     def filter_recommended_photos(self, collection):
         collection = filter(lambda m: m['recommended'], collection)
-        return self.strip_unused_fields(collection)[:PHOTO_COUNT]
+        return self.strip_unused_fields(collection)[:TOTAL_MEDIA_COUNT]
 
     def process(self):
-        recommended_photos = self.related_photos.recommend()
+        recommended_photos = self.related_photos.recommend()[:RELATED_MEDIA_COUNT]
 
         recommended_user_ids = map(lambda m: m['user_id'], recommended_photos)
 
@@ -39,7 +40,7 @@ class Recommender():
 
         recommended_photos = self.filter_recommended_photos(recommended_photos)
 
-        if len(recommended_photos) < PHOTO_COUNT:
+        if len(recommended_photos) < TOTAL_MEDIA_COUNT:
             raise RuntimeError('Not enough photos')
 
         return recommended_photos

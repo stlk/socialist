@@ -124,6 +124,6 @@ class RecommenderTest(TestCase):
                                        tags=['tag'],
                                        media_count=1)
 
-        recommender.PHOTO_COUNT = 1
+        recommender.TOTAL_MEDIA_COUNT = 1
         r = recommender.Recommender(user)
         r.process()
