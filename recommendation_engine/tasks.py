@@ -1,14 +1,14 @@
 from django.contrib.auth.models import User
 from django_rq import job
 
-from .instagram import Instagram
+from .recommender import Recommender
 from .mailer import Mailer
 
 
 @job
 def send_recommendations(user: User):
-    instagram = Instagram(user)
-    photos = instagram.recommend()
+    recommender = Recommender(user)
+    photos = recommender.process()
 
     mailer = Mailer()
     mailer.send_recommendations(user.email, photos)

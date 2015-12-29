@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'social.apps.django_app.default',
     'accounts',
     'console',
+    'recommendation_engine',
     'django_rq',
 )
 

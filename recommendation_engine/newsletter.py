@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from .tasks import send_recommendations
 import django_rq
 
+
 class Newsletter():
 
     def send(self, user: User):
@@ -17,7 +18,8 @@ class Newsletter():
         return users
 
     def send_to_one_subscriber(self, user_id: int):
-        user = User.objects.filter(subscription__id__isnull=False, subscription__cancelled=None).get(id=user_id)
+        user = User.objects.filter(subscription__id__isnull=False,
+                                   subscription__cancelled=None).get(id=user_id)
         logging.info('Sending newsletter to %s', user.username)
         self.send(user)
         return user
