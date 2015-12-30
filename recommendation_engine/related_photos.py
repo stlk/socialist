@@ -3,6 +3,7 @@ from functools import reduce
 from collections import Counter
 
 from django.contrib.auth.models import User
+from instagram.bind import InstagramAPIError
 
 from .models import UserAggregation
 from .instagram import Instagram
@@ -56,12 +57,19 @@ class RelatedPhotos(Instagram):
     def get_media_for_tag(self, tag):
         media = []
         self.log_ratelimit()
-        tag_recent_media, next_ = self.api.tag_recent_media(tag_name=tag)
-        media.extend(tag_recent_media)
-        while next_ and len(media) < 200:
-            tag_recent_media, next_ = self.api.tag_recent_media(tag_name=tag, with_next_url=next_)
+        try:
+            tag_recent_media, next_ = self.api.tag_recent_media(tag_name=tag)
             media.extend(tag_recent_media)
-            self.log_ratelimit()
+            while next_ and len(media) < 200:
+                tag_recent_media, next_ = self.api.tag_recent_media(tag_name=tag,
+                                                                    with_next_url=next_)
+                media.extend(tag_recent_media)
+                self.log_ratelimit()
+        except InstagramAPIError as e:
+            if e.error_type == 'APINotAllowedError':
+                logging.info("Tag {0} is not allowed".format(tag))
+            else:
+                raise
         return media
 
     def get_top_10_tags(self):
