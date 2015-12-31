@@ -15,7 +15,7 @@ body {
 }
 
 .header {
-  padding: 1rem;
+  padding: 1rem 0;
 }
 
 .header .brand {
@@ -80,30 +80,4 @@ input[type=text] {
 
 .login h1 {
   font-size: 3rem;
-}
-
-#photos {
-  display: -webkit-flex;
-	display: -moz-flex;
-	display: flex;
-	-webkit-flex-flow: column nowrap;
-	-moz-flex-flow: column nowrap;
-	flex-flow: column nowrap;
-  -webkit-justify-content: center;
-	-moz-justify-content: center;
-	justify-content:center;
-  -webkit-align-content: center;
-  align-content: center;
-}
-
-#photos img {display: block;}
-
-#photos a {
-  -webkit-align-content: center;
-  align-content: center;
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: flex;
-  box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.8);
-  margin: 2rem auto;
 }
