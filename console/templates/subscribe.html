@@ -10,6 +10,11 @@
 </p>
 <form action="{% url 'console:subscribe' %}" method="post">
 	{{ form.email }}
+	<p>
+		{% for error in form.email.errors %}
+			<strong>{{ error|escape }}</strong>
+	  {% endfor %}
+	</p>
 	{% csrf_token %}
 	<button type="submit" class="button">Continue</button>
 </form>
