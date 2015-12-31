@@ -1,4 +1,5 @@
 {% extends 'layout.html' %}
+{% load staticfiles %}
 {% block title %}thank you!{% endblock %}
 
 {% block header %}
@@ -9,5 +10,7 @@
 {% endblock %}
 
 {% block content %}
-
+<p>I'm currently sending out emails manualy. You should receive yours in a day, but sometimes things might go wrong.</p>
+<p>Meanwhile, this is preview of how will it look like.</p>
+<img class="h-centered" src="{% static 'preview.png' %}" />
 {% endblock %}

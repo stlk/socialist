@@ -68,6 +68,12 @@ input[type=text] {
   font-size: 0.8rem;
 }
 
+.h-centered {
+  display:block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .login {
   text-align: center;
 }
