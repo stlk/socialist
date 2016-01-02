@@ -37,6 +37,10 @@ def weight_by_tags(weights, tags):
     return weight
 
 
+def keep_only_images(collection):
+    return filter(lambda m: m.type == 'image', collection)
+
+
 class RelatedPhotos(Instagram):
 
     def __init__(self, user: User):
@@ -98,7 +102,7 @@ class RelatedPhotos(Instagram):
 
         media_for_user = []
         for tag in top_10_tags:
-            media_for_user.extend(self.find_media_for_tag(tag))
+            media_for_user.extend(keep_only_images(self.find_media_for_tag(tag)))
 
         media_for_user_processed = map(
             lambda m:

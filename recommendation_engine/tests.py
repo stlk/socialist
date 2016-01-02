@@ -21,6 +21,7 @@ class MockInstagramAPI(InstagramAPI):
         medium = Mock(id=1,
                       like_count=1,
                       link='',
+                      type='image',
                       get_standard_resolution_url=Mock(return_value=''),
                       user=user,
                       caption=caption)
