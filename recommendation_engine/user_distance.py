@@ -29,7 +29,7 @@ class UserDistance():
 
         self.generate_dtm(media_captions)
 
-        distance_threshold = np.max(self.dist) - np.mean(self.dist) * 2
+        distance_threshold = np.mean(self.dist) * 2
 
         for medium in media:
             distance = self.find_distance(medium)

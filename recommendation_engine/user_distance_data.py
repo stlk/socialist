@@ -18,7 +18,7 @@ class UserDistanceData(Instagram):
         self.log_ratelimit()
         recent_media, next_ = self.api.user_recent_media(user_id=user_id)
         media.extend(recent_media)
-        while next_ and len(media) < 200:
+        while next_ and len(media) < 300:
             recent_media, next_ = self.api.user_recent_media(with_next_url=next_)
             media.extend(recent_media)
             self.log_ratelimit()
