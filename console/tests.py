@@ -1,11 +1,12 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 
 from .models import Subscription
 
 User = get_user_model()
+
 
 class SubscriptionModelTest(TestCase):
 
@@ -20,6 +21,7 @@ class SubscriptionModelTest(TestCase):
         Subscription.unsubscribe(user)
         subscription = user.subscription_set.get()
         self.assertIsNotNone(subscription.cancelled)
+
 
 class SubscribeViewTest(TestCase):
 
@@ -40,12 +42,18 @@ class SubscribeViewTest(TestCase):
 
     def test_redirect_to_subscribed_page_when_user_is_alredy_subscribed(self):
         user = User.objects.get(username='user1')
-        subscription = Subscription.objects.create(user=user)
+        Subscription.objects.create(user=user)
         response = self.client.get(reverse('console:subscribe'))
 
         self.assertRedirects(response, reverse('console:subscribed'))
 
+    @patch('console.views.Instagram', new=Mock(return_value=Mock(user_has_no_posts=Mock(return_value=False))))
     def test_save_users_email(self):
-        response = self.client.post(reverse('console:subscribe'), {'email': 'email@example.com'})
+        self.client.post(reverse('console:subscribe'), {'email': 'email@example.com'})
         user = User.objects.get(username='user1')
         self.assertEqual(user.email, 'email@example.com')
+
+    @patch('console.views.Instagram', new=Mock(return_value=Mock(user_has_no_posts=Mock(return_value=True))))
+    def test_subscribe_fails_when_user_has_no_posts(self):
+        response = self.client.post(reverse('console:subscribe'), {'email': 'email@example.com'})
+        self.assertTemplateUsed(response, 'subscribe.html')

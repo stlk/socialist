@@ -1,13 +1,12 @@
 from django.shortcuts import render, redirect
 from django.views.generic.base import View
 from django.contrib.auth.decorators import login_required
-from django.conf import settings
 
 from django_libretto.decorators import view_decorator
 
 from . import forms
 from .models import Subscription
-
+from .instagram import Instagram
 
 
 @view_decorator(login_required)
@@ -23,6 +22,10 @@ class SubscribeView(View):
 
     def post(self, request):
         form = forms.SubscribeForm(request.POST)
+
+        if Instagram(request.user).user_has_no_posts():
+            form.add_error('email', "We can't handle users with no posts, sorry.")
+
         if form.is_valid():
             data = form.cleaned_data
             Subscription.subscribe(request.user, data['email'])
