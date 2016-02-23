@@ -5,27 +5,13 @@ from collections import Counter
 from django.contrib.auth.models import User
 from instagram.bind import InstagramAPIError
 
+from .collections import unique
 from .models import UserAggregation
 from .instagram import Instagram
 
 
 def retreive_tags(result, tags):
     result += list(map(lambda tag: tag.name, tags))
-    return result
-
-
-def unique(seq, idfun=None):
-    if idfun is None:
-        def idfun(x):
-            return x
-    seen = {}
-    result = []
-    for item in seq:
-        marker = idfun(item)
-        if marker in seen:
-            continue
-        seen[marker] = 1
-        result.append(item)
     return result
 
 
