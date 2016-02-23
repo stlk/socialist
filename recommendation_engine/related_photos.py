@@ -105,6 +105,6 @@ class RelatedPhotos(Instagram):
         media_for_user_processed = unique(media_for_user_processed, lambda m: m['id'])
 
         media_for_user_processed = sorted(media_for_user_processed,
-                                          key=lambda m: m['likes'] * weight_by_tags(top_10_tags_with_count, m['tags']),
+                                          key=lambda m: weight_by_tags(top_10_tags_with_count, m['tags']),
                                           reverse=True)
         return list(media_for_user_processed)
