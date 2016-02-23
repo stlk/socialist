@@ -1,2 +1,2 @@
-web: gunicorn socialist.wsgi --log-file -
+web: waitress-serve --port=$PORT socialist.wsgi:application
 worker: python -u manage.py rqworker default
