@@ -1,6 +1,7 @@
 import logging
 from functools import reduce
 from collections import Counter
+from datetime import datetime, timedelta
 
 from django.contrib.auth.models import User
 from instagram.bind import InstagramAPIError
@@ -25,6 +26,11 @@ def weight_by_tags(weights, tags):
 
 def keep_only_images(collection):
     return filter(lambda m: m.type == 'image', collection)
+
+
+def take_recent_images(collection):
+    date_N_days_ago = datetime.now() - timedelta(days=7)
+    return filter(lambda m: m.created_time > date_N_days_ago, collection)
 
 
 def photo_dictionary(m, top_10_tags_with_count):
@@ -105,6 +111,8 @@ class RelatedPhotos(Instagram):
         media_for_user = []
         for tag in top_10_tags:
             media_for_user.extend(keep_only_images(self.find_media_for_tag(tag)))
+
+        media_for_user = take_recent_images(media_for_user)
 
         media_for_user_processed = map(lambda m: photo_dictionary(m, top_10_tags_with_count), media_for_user)
         media_for_user_processed = unique(media_for_user_processed, lambda m: m['id'])

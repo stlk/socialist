@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.test import TestCase
 from unittest.mock import patch, Mock, PropertyMock
 from instagram.client import InstagramAPI
@@ -23,6 +24,7 @@ class MockInstagramAPI(InstagramAPI):
                       link='',
                       type='image',
                       get_standard_resolution_url=Mock(return_value=''),
+                      created_time=datetime.now(),
                       user=user,
                       caption=caption)
         type(medium).tags = PropertyMock(return_value=[tag])
