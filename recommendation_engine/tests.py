@@ -25,6 +25,7 @@ class MockInstagramAPI(InstagramAPI):
                       type='image',
                       get_standard_resolution_url=Mock(return_value=''),
                       created_time=datetime.now(),
+                      comment_count=1,
                       user=user,
                       caption=caption)
         type(medium).tags = PropertyMock(return_value=[tag])
