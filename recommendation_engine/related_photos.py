@@ -1,31 +1,18 @@
 import logging
 from functools import reduce
 from collections import Counter
+from datetime import datetime, timedelta
 
 from django.contrib.auth.models import User
 from instagram.bind import InstagramAPIError
 
+from .collections import unique
 from .models import UserAggregation
 from .instagram import Instagram
 
 
 def retreive_tags(result, tags):
     result += list(map(lambda tag: tag.name, tags))
-    return result
-
-
-def unique(seq, idfun=None):
-    if idfun is None:
-        def idfun(x):
-            return x
-    seen = {}
-    result = []
-    for item in seq:
-        marker = idfun(item)
-        if marker in seen:
-            continue
-        seen[marker] = 1
-        result.append(item)
     return result
 
 
@@ -39,6 +26,27 @@ def weight_by_tags(weights, tags):
 
 def keep_only_images(collection):
     return filter(lambda m: m.type == 'image', collection)
+
+
+def take_recent_images(collection):
+    date_N_days_ago = datetime.now() - timedelta(days=7)
+    return filter(lambda m: m.created_time > date_N_days_ago, collection)
+
+
+def photo_dictionary(m, top_10_tags_with_count):
+    tags = list(map(lambda t: t.name, m.tags))
+    return {
+        'id': m.id,
+        'user_id': m.user.id,
+        'username': m.user.username,
+        'caption': (m.caption.text if m.caption else ''),
+        'likes': m.like_count,
+        'comments': m.comment_count,
+        'link': m.link,
+        'url': m.get_standard_resolution_url(),
+        'tags': tags,
+        'tag_weight': weight_by_tags(top_10_tags_with_count, tags)
+    }
 
 
 class RelatedPhotos(Instagram):
@@ -104,21 +112,12 @@ class RelatedPhotos(Instagram):
         for tag in top_10_tags:
             media_for_user.extend(keep_only_images(self.find_media_for_tag(tag)))
 
-        media_for_user_processed = map(
-            lambda m:
-                {
-                    'id': m.id,
-                    'user_id': m.user.id,
-                    'username': m.user.username,
-                    'caption': (m.caption.text if m.caption else ''),
-                    'likes': m.like_count,
-                    'link': m.link,
-                    'url': m.get_standard_resolution_url(),
-                    'tags': list(map(lambda t: t.name, m.tags))
-                }, media_for_user)
+        media_for_user = take_recent_images(media_for_user)
+
+        media_for_user_processed = map(lambda m: photo_dictionary(m, top_10_tags_with_count), media_for_user)
         media_for_user_processed = unique(media_for_user_processed, lambda m: m['id'])
 
         media_for_user_processed = sorted(media_for_user_processed,
-                                          key=lambda m: m['likes'] * weight_by_tags(top_10_tags_with_count, m['tags']),
+                                          key=lambda m: m['comments'] * 0.01 + m['tag_weight'],
                                           reverse=True)
         return list(media_for_user_processed)

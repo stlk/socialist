@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 
+from .collections import unique
 from .related_photos import RelatedPhotos
 from .user_distance_data import UserDistanceData
 from .user_distance import UserDistance
@@ -28,6 +29,7 @@ class Recommender():
 
     def filter_recommended_photos(self, collection):
         collection = filter(lambda m: m['recommended'], collection)
+        collection = unique(collection, lambda m: m['user_id'])
         return self.strip_unused_fields(collection)[:TOTAL_MEDIA_COUNT]
 
     def process(self):
